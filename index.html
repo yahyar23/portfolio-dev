@@ -19,26 +19,30 @@
             --btn-grad: linear-gradient(135deg, #1f6feb, #00d4ff);
         }
 
-        body {
+        /* تعديل أساسي لمنع التمرير الأفقي */
+        html, body {
             background-color: var(--bg-color);
             color: var(--text-main);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
             line-height: 1.6;
+            overflow-x: hidden; /* هذا هو الحل السحري لحذف الخط اليمين */
+            width: 100%;
         }
 
         .container {
             max-width: 900px;
             margin: 0 auto;
-            padding: 40px 20px 120px; /* padding سفلي للموبايل */
+            padding: 40px 20px 120px;
+            box-sizing: border-box;
         }
 
         /* --- القائمة الجانبية (Sidebar) --- */
         .sidebar {
             position: fixed;
             top: 0;
-            right: -300px; /* مخفي افتراضياً */
+            right: -300px; 
             width: 280px;
             height: 100%;
             background: var(--card-bg);
@@ -47,6 +51,7 @@
             z-index: 2000;
             padding: 40px 20px;
             border-left: 1px solid #30363d;
+            box-sizing: border-box; /* لضمان عدم تجاوز العرض المحدد */
         }
 
         .sidebar.active {
@@ -131,7 +136,7 @@
             transform: translateY(-3px);
         }
 
-        /* --- قسم المشاريع (نفس ستايل الصورة) --- */
+        /* --- قسم المشاريع --- */
         .section-header {
             text-align: right;
             margin-bottom: 30px;
@@ -147,6 +152,7 @@
             margin-bottom: 20px;
             gap: 25px;
             transition: 0.3s;
+            overflow: hidden; /* لمنع محتوى الكارت من الخروج */
         }
 
         .project-card:hover {
@@ -209,9 +215,9 @@
             text-decoration: none;
         }
 
-        /* --- التنسيق للهواتف (القائمة السفلية) --- */
+        /* --- القائمة السفلية --- */
         .mobile-bottom-nav {
-            display: none; /* مخفي في الكمبيوتر */
+            display: none;
             position: fixed;
             bottom: 0;
             left: 0;
@@ -221,6 +227,7 @@
             padding: 10px 0;
             z-index: 3000;
             justify-content: space-around;
+            box-sizing: border-box;
         }
 
         .nav-item {
@@ -241,9 +248,14 @@
         @media (max-width: 768px) {
             .menu-toggle-btn { display: none; }
             .mobile-bottom-nav { display: flex; }
-            .project-card { flex-direction: column; text-align: center; }
+            .project-card { 
+                flex-direction: column; 
+                text-align: center; 
+                padding: 15px;
+            }
             .project-img { width: 100%; height: 180px; }
             .whatsapp-btn { bottom: 85px; width: 50px; height: 50px; font-size: 1.5rem; }
+            .container { padding: 20px 15px 120px; }
         }
     </style>
 </head>
@@ -290,7 +302,7 @@
                     <img src="https://tse3.mm.bing.net/th/id/OIP.CJ-GvSWfyD_AvSuld2ScaQHaEJ?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Project">
                 </div>
                 <div class="project-info">
-                    <h3>متجر  إلكتروني</h3>
+                    <h3>متجر إلكتروني</h3>
                     <p>نظام متكامل لإدارة المنتجات والطلبات</p>
                     <a href="index-prod.html" class="view-link">عرض</a>
                 </div>
@@ -306,9 +318,10 @@
                     <a href="index-airline.htm" class="view-link">عرض</a>
                 </div>
             </div>
+
             <div class="project-card">
                 <div class="project-img">
-                    <img src="https://www.slideteam.net/wp/wp-content/uploads/2023/02/%D9%84%D9%88%D8%AD%D8%A9-%D8%A7%D9%84%D9%82%D9%8A%D8%A7%D8%AF%D8%A9-%D9%84%D8%A3%D8%AF%D8%A7%D8%A1-%D9%85%D8%B4%D8%B1%D9%88%D8%B9-%D8%AA%D8%B7%D9%88%D9%8A%D8%B1-%D8%A7%D9%84%D9%88%D9%8A%D8%A8-2.png" alt="Project">
+                    <img src="https://www.slideteam.net/wp/wp-content/uploads/2023/02/%D9%84%D9%88%D8%AD%D8%A9-%D8%A7%D9%84%D9%82%D9%8I%D8%A7%D8%AF%D8%A9-%D9%84%D8%A3%D8%AF%D8%A7%D8%A1-%D9%85%D8%B4%D8%B1%D9%88%D8%B9-%D8%AA%D8%B7%D9%88%D9%8A%D8%B1-%D8%A7%D9%84%D9%88%D9%8A%D8%A8-2.png" alt="Project">
                 </div>
                 <div class="project-info">
                     <h3>قاعدة تحكم العيادات</h3>
@@ -316,6 +329,7 @@
                     <a href="alteb.html" class="view-link">عرض</a>
                 </div>
             </div>
+
             <div class="project-card">
                 <div class="project-img">
                     <img src="https://artedivinoeg.com/wp-content/uploads/2025/07/%D8%A3%D9%81%D9%83%D8%A7%D8%B1-%D8%AA%D8%B5%D9%85%D9%8A%D9%85-%D8%B9%D9%8A%D8%A7%D8%AF%D8%A7%D8%AA-%D8%B7%D8%A8%D9%8A%D8%A9.png" alt="Project">
@@ -334,7 +348,7 @@
     </a>
 
     <nav class="mobile-bottom-nav">
-        <a href="#" class="nav-item" onclick="toggleSidebar()">
+        <a href="javascript:void(0)" class="nav-item" onclick="toggleSidebar()">
             <i class="fas fa-briefcase"></i>
             <span>أعمالي</span>
         </a>
@@ -354,12 +368,14 @@
             sidebar.classList.toggle('active');
         }
 
-        // إغلاق القائمة عند النقر خارجها
         window.onclick = function(event) {
             const sidebar = document.getElementById('mainSidebar');
             const btn = document.querySelector('.menu-toggle-btn');
-            if (event.target !== sidebar && !sidebar.contains(event.target) && event.target !== btn && !btn.contains(event.target)) {
-                sidebar.classList.remove('active');
+            // التأكد من إغلاق السايدبار عند الضغط في الخارج وعدم حدوث مشاكل في الموبايل
+            if (sidebar.classList.contains('active')) {
+                if (!sidebar.contains(event.target) && !btn.contains(event.target)) {
+                    sidebar.classList.remove('active');
+                }
             }
         }
     </script>
