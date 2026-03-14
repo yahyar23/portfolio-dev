@@ -2,33 +2,39 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>يحيى قاسم عبد الرسول | مبرمج</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
+    <title>يحيى قاسم عبد الرسول | مبرمج ومطور ويب عراقي - تصميم متاجر وعيادات</title>
+    <meta name="description" content="يحيى قاسم عبد الرسول، مبرمج ومطور ويب عراقي متخصص في تصميم المواقع المتجاوبة، المتاجر الإلكترونية، واجهات العيادات الطبية، ومواقع السياحة والسفر. خبرة في Laravel و VueJS.">
+    <meta name="keywords" content="يحيى قاسم, يحيى قاسم عبد الرسول, مبرمج عراقي, مطور ويب عراقي, تصميم متجر الكتروني, تصميم موقع شركة سياحة, واجهة عيادة طبية, مبرمج في بغداد, شركة برمجيات, تطوير مواقع هواتف">
+    <meta name="author" content="يحيى قاسم عبد الرسول">
+    
+    <meta property="og:title" content="يحيى قاسم عبد الرسول | خبير الحلول البرمجية والمواقع الذكية">
+    <meta property="og:description" content="تصميم مواقع ويب احترافية، متاجر إلكترونية، وأنظمة طبية متطورة.">
+    <meta property="og:type" content="website">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        /* المتغيرات الأساسية للألوان */
         :root {
             --bg-color: #0d1117;
             --card-bg: #161b22;
             --accent-blue: #58a6ff;
-            --accent-green: #3fb950;
             --text-main: #c9d1d9;
             --text-bright: #ffffff;
             --btn-grad: linear-gradient(135deg, #1f6feb, #00d4ff);
         }
 
-        /* تعديل أساسي لمنع التمرير الأفقي */
+        /* منع الخط اليمين والتمرير الأفقي نهائياً */
         html, body {
             background-color: var(--bg-color);
             color: var(--text-main);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            line-height: 1.6;
-            overflow-x: hidden; /* هذا هو الحل السحري لحذف الخط اليمين */
+            overflow-x: hidden;
             width: 100%;
+            position: relative;
         }
 
         .container {
@@ -38,11 +44,11 @@
             box-sizing: border-box;
         }
 
-        /* --- القائمة الجانبية (Sidebar) --- */
+        /* Sidebar التفاعلي */
         .sidebar {
             position: fixed;
             top: 0;
-            right: -300px; 
+            right: -300px;
             width: 280px;
             height: 100%;
             background: var(--card-bg);
@@ -51,45 +57,11 @@
             z-index: 2000;
             padding: 40px 20px;
             border-left: 1px solid #30363d;
-            box-sizing: border-box; /* لضمان عدم تجاوز العرض المحدد */
+            box-sizing: border-box;
         }
 
-        .sidebar.active {
-            right: 0;
-        }
+        .sidebar.active { right: 0; }
 
-        .sidebar h3 {
-            color: var(--accent-blue);
-            border-bottom: 1px solid #30363d;
-            padding-bottom: 15px;
-            margin-bottom: 25px;
-        }
-
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .sidebar ul li {
-            margin: 15px 0;
-        }
-
-        .sidebar ul li a {
-            color: var(--text-main);
-            text-decoration: none;
-            font-size: 1.1rem;
-            display: block;
-            padding: 10px;
-            border-radius: 8px;
-            transition: 0.3s;
-        }
-
-        .sidebar ul li a:hover {
-            background: #21262d;
-            color: var(--accent-blue);
-        }
-
-        /* زر القائمة (للكمبيوتر فقط) */
         .menu-toggle-btn {
             position: fixed;
             top: 25px;
@@ -106,255 +78,155 @@
             justify-content: center;
             align-items: center;
             font-size: 1.2rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        /* --- قسم المهارات --- */
-        .skills-container {
-            margin: 40px 0;
-        }
-
-        .skills-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            justify-content: center;
-        }
-
-        .skill-tag {
-            background: #21262d;
-            border: 1px solid #30363d;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-size: 0.9rem;
-            color: var(--accent-blue);
-            transition: 0.3s;
-        }
-
-        .skill-tag:hover {
-            border-color: var(--accent-blue);
-            transform: translateY(-3px);
-        }
-
-        /* --- قسم المشاريع --- */
-        .section-header {
-            text-align: right;
-            margin-bottom: 30px;
-        }
-
+        /* المشاريع */
         .project-card {
             background: var(--card-bg);
             border: 1px solid #30363d;
-            border-radius: 15px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             padding: 20px;
             margin-bottom: 20px;
-            gap: 25px;
+            gap: 20px;
             transition: 0.3s;
-            overflow: hidden; /* لمنع محتوى الكارت من الخروج */
+            overflow: hidden;
         }
 
-        .project-card:hover {
-            border-color: #8b949e;
-        }
+        .project-card:hover { border-color: var(--accent-blue); transform: scale(1.01); }
 
         .project-img {
-            width: 150px;
-            height: 100px;
-            background: #0d1117;
-            border-radius: 10px;
-            overflow: hidden;
-            flex-shrink: 0;
+            width: 140px; height: 90px;
+            background: #0d1117; border-radius: 12px;
+            overflow: hidden; flex-shrink: 0;
         }
 
-        .project-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.8;
-        }
+        .project-img img { width: 100%; height: 100%; object-fit: cover; }
 
-        .project-info h3 {
-            margin: 0;
-            font-size: 1.3rem;
-            color: var(--text-bright);
-        }
-
-        .project-info p {
-            margin: 5px 0 15px;
-            color: #8b949e;
-        }
+        .project-info h3 { margin: 0; font-size: 1.2rem; color: var(--text-bright); }
+        .project-info p { margin: 5px 0 10px; font-size: 0.9rem; color: #8b949e; }
 
         .view-link {
             background: var(--btn-grad);
             color: white;
             text-decoration: none;
-            padding: 8px 35px;
-            border-radius: 25px;
+            padding: 6px 25px;
+            border-radius: 20px;
+            font-size: 0.85rem;
             font-weight: bold;
-            display: inline-block;
         }
 
-        /* --- زر الواتساب العائم --- */
-        .whatsapp-btn {
-            position: fixed;
-            bottom: 30px;
-            left: 30px;
-            background-color: #25d366;
-            color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            z-index: 1500;
-            text-decoration: none;
-        }
-
-        /* --- القائمة السفلية --- */
+        /* القائمة السفلية للهواتف */
         .mobile-bottom-nav {
             display: none;
             position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: var(--card-bg);
+            bottom: 0; left: 0; width: 100%;
+            background: rgba(22, 27, 34, 0.95);
+            backdrop-filter: blur(10px);
             border-top: 1px solid #30363d;
-            padding: 10px 0;
+            padding: 12px 0;
             z-index: 3000;
             justify-content: space-around;
-            box-sizing: border-box;
         }
 
         .nav-item {
             color: var(--text-main);
             text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 0.8rem;
+            display: flex; flex-direction: column; align-items: center;
+            font-size: 0.75rem;
         }
 
-        .nav-item i {
-            font-size: 1.2rem;
-            margin-bottom: 4px;
+        .nav-item i { font-size: 1.3rem; margin-bottom: 3px; }
+
+        .whatsapp-btn {
+            position: fixed; bottom: 30px; left: 30px;
+            background: #25d366; color: white;
+            width: 55px; height: 55px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 1.8rem; z-index: 1500; text-decoration: none;
         }
 
-        /* تعديلات الشاشة الصغيرة */
         @media (max-width: 768px) {
             .menu-toggle-btn { display: none; }
             .mobile-bottom-nav { display: flex; }
-            .project-card { 
-                flex-direction: column; 
-                text-align: center; 
-                padding: 15px;
-            }
-            .project-img { width: 100%; height: 180px; }
-            .whatsapp-btn { bottom: 85px; width: 50px; height: 50px; font-size: 1.5rem; }
-            .container { padding: 20px 15px 120px; }
+            .project-card { flex-direction: column; text-align: center; }
+            .project-img { width: 100%; height: 160px; }
+            .whatsapp-btn { bottom: 90px; }
         }
     </style>
 </head>
 <body>
 
-    <button class="menu-toggle-btn" onclick="toggleSidebar()">
+    <button class="menu-toggle-btn" onclick="toggleSidebar()" aria-label="فتح القائمة">
         <i class="fas fa-bars"></i>
     </button>
 
     <aside id="mainSidebar" class="sidebar">
-        <h3><i class="fas fa-folder-open"></i> قائمة أعمالي</h3>
-        <ul>
-            <li><a href="index-airline.htm"><i class="fas fa-building"></i> موقع للشركات</a></li>
-            <li><a href="index-prod.html"><i class="fas fa-shopping-cart"></i> المتاجر الإلكترونية</a></li>
-            <li><a href="#"><i class="fas fa-user-circle"></i> مواقع حسب الطلب</a></li>
-            <li><a href="javascript:void(0)" onclick="toggleSidebar()" style="color: #ff7b72;"><i class="fas fa-times"></i> إغلاق</a></li>
+        <h3 style="color: var(--accent-blue);"><i class="fas fa-code"></i> خدمات البرمجة</h3>
+        <ul style="list-style: none; padding: 0;">
+            <li><a href="#" style="color: var(--text-main); text-decoration: none; display: block; padding: 12px 0;">تصميم متاجر إلكترونية</a></li>
+            <li><a href="#" style="color: var(--text-main); text-decoration: none; display: block; padding: 12px 0;">أنظمة عيادات طبية</a></li>
+            <li><a href="#" style="color: var(--text-main); text-decoration: none; display: block; padding: 12px 0;">مواقع شركات سياحية</a></li>
         </ul>
     </aside>
 
     <div class="container">
-        <header style="text-align: center; margin-bottom: 50px;">
-            <h1 style="color: var(--text-bright); margin-bottom: 5px;">يحيى قاسم عبد الرسول</h1>
-            <p style="color: var(--accent-blue); font-weight: bold;">مبرمج ومطور ويب</p>
+        <header style="text-align: center; margin-bottom: 40px;">
+            <h1 style="color: var(--text-bright); font-size: 2rem; margin-bottom: 5px;">يحيى قاسم عبد الرسول</h1>
+            <p style="color: var(--accent-blue); font-size: 1.1rem;">مطور ويب ومبرمج تطبيقات Full-Stack</p>
         </header>
 
-        <section class="skills-container">
-            <h2 class="section-header">مهاراتي</h2>
-            <div class="skills-grid">
-                <span class="skill-tag">HTML</span>
-                <span class="skill-tag">CSS</span>
-                <span class="skill-tag">JS</span>
-                <span class="skill-tag">PHP</span>
-                <span class="skill-tag">Laravel</span>
-                <span class="skill-tag">VueJS</span>
-                <span class="skill-tag">MySQL</span>
-            </div>
-        </section>
-
         <section>
-            <h2 class="section-header">أحدث المشاريع</h2>
+            <h2 style="text-align: right; border-right: 4px solid var(--accent-blue); padding-right: 15px; margin-bottom: 25px;">أحدث أعمالي</h2>
 
             <div class="project-card">
                 <div class="project-img">
-                    <img src="https://tse3.mm.bing.net/th/id/OIP.CJ-GvSWfyD_AvSuld2ScaQHaEJ?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Project">
+                    <img src="https://artedivinoeg.com/wp-content/uploads/2025/07/%D8%A3%D9%81%D9%83%D8%A7%D8%B1-%D8%AA%D8%B5%D9%85%D9%8A%D9%85-%D8%B9%D9%8A%D8%A7%D8%AF%D8%A7%D8%AA-%D8%B7%D8%A8%D9%8A%D8%A9.png" alt="تصميم واجهة عيادة طبية - مبرمج يحيى قاسم">
                 </div>
                 <div class="project-info">
-                    <h3>متجر إلكتروني</h3>
-                    <p>نظام متكامل لإدارة المنتجات والطلبات</p>
-                    <a href="index-prod.html" class="view-link">عرض</a>
+                    <h3>نظام العيادات الذكي</h3>
+                    <p>واجهة متطورة لحجز المواعيد وإدارة المرضى بشكل متجاوب.</p>
+                    <a href="user-alteb.html" class="view-link">معاينة النظام</a>
                 </div>
             </div>
 
             <div class="project-card">
                 <div class="project-img">
-                    <img src="https://vrdecorations.com/wp-content/uploads/%D8%AA%D8%B5%D8%A7%D9%85%D9%8A%D9%85-%D9%85%D8%B9%D8%A7%D8%B1%D8%B6-%D8%AA%D8%AC%D8%A7%D8%B1%D9%8A%D8%A9.jpg" alt="Project">
+                    <img src="https://tse3.mm.bing.net/th/id/OIP.CJ-GvSWfyD_AvSuld2ScaQHaEJ?rs=1" alt="برمجة متجر الكتروني متكامل">
                 </div>
                 <div class="project-info">
-                    <h3>موقع للشركات</h3>
-                    <p>واجهة أمامية متجاوبة بأحدث التقنيات</p>
-                    <a href="index-airline.htm" class="view-link">عرض</a>
+                    <h3>المتاجر الإلكترونية</h3>
+                    <p>تصميم متاجر تدعم الدفع الإلكتروني وتجربة مستخدم سلسة.</p>
+                    <a href="index-prod.html" class="view-link">عرض المتجر</a>
                 </div>
             </div>
-
+            
             <div class="project-card">
                 <div class="project-img">
-                    <img src="https://www.slideteam.net/wp/wp-content/uploads/2023/02/%D9%84%D9%88%D8%AD%D8%A9-%D8%A7%D9%84%D9%82%D9%8A%D8%A7%D8%AF%D8%A9-%D9%84%D8%A3%D8%AF%D8%A7%D8%A1-%D9%85%D8%B4%D8%B1%D9%88%D8%B9-%D8%AA%D8%B7%D9%88%D9%8A%D8%B1-%D8%A7%D9%84%D9%88%D9%8A%D8%A8-2.png" alt="Project">
+                    <img src="https://vrdecorations.com/wp-content/uploads/%D8%AA%D8%B5%D8%A7%D9%85%D9%8A%D9%85-%D9%85%D8%B9%D8%A7%D8%B1%D8%B6-%D8%AA%D8%AC%D8%A7%D8%B1%D9%8A%D8%A9.jpg" alt="تصميم موقع شركة سياحة وسفر">
                 </div>
                 <div class="project-info">
-                    <h3>قاعدة تحكم العيادات</h3>
-                    <p>واجهة خلفية متجاوبة بأحدث التقنيات</p>
-                    <a href="alteb.html" class="view-link">عرض</a>
-                </div>
-            </div>
-
-            <div class="project-card">
-                <div class="project-img">
-                    <img src="https://artedivinoeg.com/wp-content/uploads/2025/07/%D8%A3%D9%81%D9%83%D8%A7%D8%B1-%D8%AA%D8%B5%D9%85%D9%8A%D9%85-%D8%B9%D9%8A%D8%A7%D8%AF%D8%A7%D8%AA-%D8%B7%D8%A8%D9%8A%D8%A9.png" alt="Project">
-                </div>
-                <div class="project-info">
-                    <h3>حجز العيادة</h3>
-                    <p>واجهة أمامية متجاوبة بأحدث التقنيات</p>
-                    <a href="user-alteb.html" class="view-link">عرض</a>
+                    <h3>مواقع السياحة والسفر</h3>
+                    <p>أنظمة حجز برامج سياحية بواجهات عصرية وجذابة.</p>
+                    <a href="index-airline.htm" class="view-link">استكشف</a>
                 </div>
             </div>
         </section>
     </div>
 
-    <a href="https://wa.me/9647713072470" class="whatsapp-btn" target="_blank">
+    <a href="https://wa.me/9647713072470" class="whatsapp-btn" target="_blank" aria-label="تواصل عبر واتساب">
         <i class="fab fa-whatsapp"></i>
     </a>
 
     <nav class="mobile-bottom-nav">
         <a href="javascript:void(0)" class="nav-item" onclick="toggleSidebar()">
-            <i class="fas fa-briefcase"></i>
-            <span>أعمالي</span>
+            <i class="fas fa-th-large"></i>
+            <span>خدماتي</span>
         </a>
         <a href="#" class="nav-item">
-            <i class="fas fa-star"></i>
-            <span>مهاراتي</span>
+            <i class="fas fa-code"></i>
+            <span>أعمالي</span>
         </a>
         <a href="https://wa.me/9647713072470" class="nav-item">
             <i class="fab fa-whatsapp"></i>
@@ -364,18 +236,14 @@
 
     <script>
         function toggleSidebar() {
-            const sidebar = document.getElementById('mainSidebar');
-            sidebar.classList.toggle('active');
+            document.getElementById('mainSidebar').classList.toggle('active');
         }
 
         window.onclick = function(event) {
             const sidebar = document.getElementById('mainSidebar');
             const btn = document.querySelector('.menu-toggle-btn');
-            // التأكد من إغلاق السايدبار عند الضغط في الخارج وعدم حدوث مشاكل في الموبايل
-            if (sidebar.classList.contains('active')) {
-                if (!sidebar.contains(event.target) && !btn.contains(event.target)) {
-                    sidebar.classList.remove('active');
-                }
+            if (sidebar.classList.contains('active') && !sidebar.contains(event.target) && !btn.contains(event.target)) {
+                sidebar.classList.remove('active');
             }
         }
     </script>
