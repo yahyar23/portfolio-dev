@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل المنتج - التاجر</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --main-red: #e62e2e;
+            --soft-gray: #f8f9fa;
+            --border-radius: 12px;
+        }
+        body { background-color: #fcfcfc; font-family: 'Cairo', sans-serif; }
+        .product-container { background: white; border-radius: var(--border-radius); padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        
+        /* قسم الصور */
+        .thumb-img { width: 70px; height: 70px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 1px solid #eee; margin-bottom: 10px; transition: 0.3s; }
+        .thumb-img:hover, .thumb-img.active { border-color: var(--main-red); box-shadow: 0 0 5px rgba(230, 46, 46, 0.3); }
+        .main-product-img-wrapper { width: 100%; border-radius: var(--border-radius); background: #f9f9f9; padding: 20px; text-align: center; }
+        .main-product-img-wrapper img { max-width: 100%; height: auto; border-radius: var(--border-radius); }
+
+        /* معلومات المنتج */
+        .product-title { font-weight: 800; font-size: 2rem; color: #333; }
+        .price-tag { color: var(--main-red); font-size: 2.5rem; font-weight: 800; }
+        
+        /* الأزرار */
+        .btn-add-to-cart { background: var(--main-red); color: white; border: none; padding: 15px 40px; border-radius: 10px; font-weight: bold; font-size: 1.2rem; transition: 0.3s; width: 100%; }
+        .btn-add-to-cart:hover { background: #c02626; transform: translateY(-2px); }
+        .btn-wishlist { border: 1px solid #ddd; background: white; padding: 15px; border-radius: 10px; transition: 0.3s; }
+
+        /* --- نظام السلة الخاص --- */
+        #customCartDrawer {
+            position: fixed;
+            top: 0;
+            left: -400px;
+            width: 380px;
+            max-width: 100%;
+            height: 100%;
+            background: #fff;
+            z-index: 9999;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 5px 0 25px rgba(0,0,0,0.15);
+            visibility: hidden;
+        }
+        #customCartDrawer.active { left: 0; visibility: visible; }
+        #cartOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 9998;
+            display: none;
+            backdrop-filter: blur(2px);
+        }
+        #cartOverlay.active { display: block; }
+
+        .promo-bar { background: white; padding: 20px; border-radius: 10px; margin-top: 40px; border: 1px solid #eee; }
+    </style>
+</head>
+<body>
+
+<div class="bg-light-custom">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4 sticky-top">
+        <div class="container d-flex justify-content-between">
+            <a href="#" class="navbar-brand fw-bold text-danger fs-3">التاجر</a>
+            <div class="d-flex align-items-center gap-3">
+                <button type="button" class="btn position-relative" onclick="toggleCart(true)">
+                    <i class="bi bi-cart3 fs-4"></i>
+                    <span class="position-absolute top-0 start-0 badge rounded-pill bg-danger">2</span>
+                </button>
+                <a href="#" class="text-dark text-decoration-none fw-bold">الرئيسية</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">الرئيسية</a></li>
+                <li class="breadcrumb-item"><a href="#">إلكترونيات</a></li>
+                <li class="breadcrumb-item active">ساعة ذكية برو</li>
+            </ol>
+        </nav>
+
+        <div class="product-container">
+            <div class="row g-5">
+                <div class="col-lg-6">
+                    <div class="row flex-row-reverse">
+                        <div class="col-10">
+                            <div class="main-product-img-wrapper">
+                                <img src="https://img-lcwaikiki.mncdn.com/mnpadding/480/640/ffffff/pim/productimages/20261/8470092/v1/l_20261-s66536z8-jqn-97-72-0-184_a.jpg" class="img-fluid" id="mainImg" alt="Product Image">
+                            </div>
+                        </div>
+                        <div class="col-2 d-flex flex-column gap-2">
+                            <img src="https://img-lcwaikiki.mncdn.com/mnpadding/480/640/ffffff/pim/productimages/20261/8470092/v1/l_20261-s66536z8-jqn-97-72-0-184_a.jpg" class="thumb-img" onclick="document.getElementById('mainImg').src=this.src">
+                            <img src="https://img-lcwaikiki.mncdn.com/mnpadding/480/640/ffffff/pim/productimages/20261/8470092/v1/l_20261-s66536z8-jqn-97-72-0-184_a.jpg" class="thumb-img" onclick="document.getElementById('mainImg').src=this.src">
+                            <img src="https://img-lcwaikiki.mncdn.com/mnpadding/480/640/ffffff/pim/productimages/20261/8470092/v1/l_20261-s66536z8-jqn-97-72-0-184_a.jpg" class="thumb-img" onclick="document.getElementById('mainImg').src=this.src">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <h1 class="product-title mb-2">اسم المنتج التجريبي هنا</h1>
+                    
+                    <div class="d-flex align-items-center gap-2 mb-3 text-warning">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
+                        <span class="text-muted small">(124 تقييم)</span>
+                    </div>
+
+                    <div class="mb-4">
+                        <span class="price-tag">250.00 <small>$</small></span>
+                    </div>
+
+                    <div class="mb-4 text-muted">
+                        <p class="fw-bold text-dark mb-1">الوصف:</p>
+                        <p>هذا نص وصفي للمنتج يوضح المميزات والخصائص. يمكنك كتابة أي تفاصيل تريد عرضها للعملاء هنا بشكل ثابت.</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <p class="fw-bold mb-2">الخيارات المتاحة:</p>
+                        <select class="form-select w-auto mb-3">
+                            <option>لون أسود - متوفر</option>
+                            <option>لون أبيض - متوفر</option>
+                            <option>لون ذهبي - كمية محدودة</option>
+                        </select>
+                    </div>
+
+                    <div class="row g-3 align-items-center">
+                        <div class="col-md-8">
+                            <button class="btn btn-add-to-cart" onclick="toggleCart(true)">
+                                <i class="bi bi-cart-plus me-2"></i> أضف إلى السلة
+                            </button>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-wishlist w-100">
+                                <i class="bi bi-heart fs-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="mt-5 mb-4 fw-bold border-bottom pb-2">📂 استكشف الأقسام</h3>
+        <div class="card border-0 shadow-sm mb-5">
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-outline-primary btn-sm fw-bold">رجالي</button>
+                    <button class="btn btn-outline-secondary btn-sm">— قمصان</button>
+                    <button class="btn btn-outline-success btn-sm">—— كاجوال</button>
+                    <button class="btn btn-outline-primary btn-sm fw-bold">نسائي</button>
+                    <button class="btn btn-outline-primary btn-sm fw-bold">إلكترونيات</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5 text-center g-3 promo-bar">
+            <div class="col-md-3 col-6">
+                <i class="bi bi-shield-check text-danger fs-3"></i>
+                <p class="mb-0 fw-bold">دفع آمن</p>
+            </div>
+            <div class="col-md-3 col-6">
+                <i class="bi bi-truck text-danger fs-3"></i>
+                <p class="mb-0 fw-bold">شحن سريع</p>
+            </div>
+            <div class="col-md-3 col-6">
+                <i class="bi bi-arrow-left-right text-danger fs-3"></i>
+                <p class="mb-0 fw-bold">إرجاع مجاني</p>
+            </div>
+            <div class="col-md-3 col-6">
+                <i class="bi bi-headset text-danger fs-3"></i>
+                <p class="mb-0 fw-bold">دعم 24/7</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="cartOverlay" onclick="toggleCart(false)"></div>
+    <div id="customCartDrawer">
+        <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-light">
+            <h5 class="fw-bold mb-0">🛒 سلة المشتريات</h5>
+            <button type="button" class="btn-close" onclick="toggleCart(false)"></button>
+        </div>
+        <div class="p-3">
+            <div class="d-flex gap-2 mb-3 border-bottom pb-2">
+                <img src="https://via.placeholder.com/50x50" class="rounded" style="width:50px;">
+                <div>
+                    <h6 class="mb-0 small fw-bold">اسم المنتج بالسلة</h6>
+                    <small class="text-danger">250.00 $</small>
+                </div>
+            </div>
+            <button class="btn btn-danger w-100 mt-3">إتمام الطلب</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleCart(isOpen) {
+        const drawer = document.getElementById('customCartDrawer');
+        const overlay = document.getElementById('cartOverlay');
+        
+        if (isOpen) {
+            drawer.classList.add('active');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        } else {
+            drawer.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+    }
+</script>
+
+</body>
+</html>

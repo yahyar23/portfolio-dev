@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فلاي زون - رحلات الطيران</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* المتغيرات والألوان */
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --dark-purple: #2a0845;
+            --text-dark: #333;
+            --text-light: #fff;
+            --bg-light: #f4f7f6;
+            --accent-mobile-bar: linear-gradient(135deg, #ff9a44 0%, #fc6076 100%); /* لون مغاير للشريط السفلي */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            padding-bottom: 70px; /* مساحة للشريط السفلي في الهاتف */
+        }
+
+        /* --- إعدادات القائمة الجانبية (Sidebar) باستخدام CSS فقط --- */
+        #sidebar-toggle {
+            display: none;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 280px;
+            height: 100vh;
+            background: var(--dark-purple);
+            color: white;
+            transition: 0.4s ease;
+            z-index: 1000;
+            padding: 2rem 1rem;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+        }
+
+        .sidebar .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #ff9a44;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: 0.3s;
+        }
+
+        .sidebar ul li a:hover {
+            color: #ff9a44;
+            transform: translateX(-10px);
+        }
+
+        /* الطبقة المعتمة خلف القائمة */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.4s;
+        }
+
+        #sidebar-toggle:checked ~ .sidebar {
+            right: 0;
+        }
+
+        #sidebar-toggle:checked ~ .overlay {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* --- الهيدر العلوي --- */
+        header {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .menu-btn {
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+
+        .header-logo {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        /* --- القسم الأول: واجهة العروض (Hero Section) --- */
+        .hero {
+            position: relative;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 100px 5% 50px;
+            color: white;
+            overflow: hidden;
+        }
+
+        /* الشكل المنحني في أسفل الهيرو (الموجة) */
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: var(--bg-light);
+            clip-path: ellipse(150% 100% at 50% 100%);
+        }
+
+        .hero-content {
+            flex: 1;
+            max-width: 500px;
+            z-index: 2;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .btn {
+            background: white;
+            color: var(--primary-color);
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            display: inline-block;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.2);
+        }
+
+        /* محاكاة السلايدر (عروض الرحلات) بدلاً من الهواتف */
+        .hero-slider {
+            flex: 1;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+            perspective: 1000px;
+        }
+
+        .flight-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 20px;
+            width: 220px;
+            text-align: center;
+            transition: 0.5s;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .flight-card:nth-child(2) {
+            transform: scale(1.1) translateZ(50px);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255,255,255,0.4);
+        }
+
+        .flight-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            background-color: #ddd; /* لون بديل في حال عدم تحميل الصورة */
+        }
+
+        .flight-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .flight-card p {
+            font-size: 0.9rem;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        /* --- قسم تذاكر الطيران والفيزا (بديل البطاقات البنكية) --- */
+        .services-section {
+            padding: 80px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            position: relative;
+        }
+
+        .services-text {
+            flex: 1;
+        }
+
+        .services-text h2 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .services-text p {
+            font-size: 1.1rem;
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .services-visuals {
+            flex: 1;
+            position: relative;
+            height: 300px;
+        }
+
+        /* تصميم كروت تشبه التذاكر / الفيزا */
+        .ticket-mockup {
+            position: absolute;
+            width: 350px;
+            height: 200px;
+            border-radius: 20px;
+            padding: 20px;
+            color: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            transition: 0.4s;
+        }
+
+        .ticket-1 {
+            background: linear-gradient(45deg, #141E30, #243B55);
+            top: 0;
+            right: 0;
+            z-index: 2;
+        }
+
+        .ticket-2 {
+            background: linear-gradient(45deg, #bdc3c7, #2c3e50);
+            top: 60px;
+            right: 80px;
+            z-index: 1;
+        }
+
+        .ticket-mockup .top-row {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dashed rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* --- قسم المزايا الداكن (المتدرج) --- */
+        .features-dark {
+            background: linear-gradient(to right, var(--dark-purple), var(--primary-color));
+            padding: 80px 5%;
+            color: white;
+            text-align: center;
+            border-radius: 40px 40px 0 0;
+            margin-top: 50px;
+        }
+
+        .features-dark h2 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+        }
+
+        .features-dark p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            color: #ddd;
+        }
+
+        /* --- شبكة الأقسام السفلية (Grid) --- */
+        .grid-services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 50px 5%;
+            background: white;
+        }
+
+        .grid-item {
+            background: var(--bg-light);
+            padding: 30px 20px;
+            border-radius: 20px;
+            text-align: center;
+            transition: 0.3s;
+            border: 1px solid #eee;
+        }
+
+        .grid-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.05);
+            background: white;
+        }
+
+        .grid-item i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            background: rgba(106, 17, 203, 0.1);
+            width: 80px;
+            height: 80px;
+            line-height: 80px;
+            border-radius: 50%;
+        }
+
+        .grid-item h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        /* --- شريط التصفح السفلي الثابت للهواتف (Bottom Fixed Nav) --- */
+        .mobile-bottom-nav {
+            display: none; /* مخفي في الشاشات الكبيرة */
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--accent-mobile-bar); /* لون مغاير جميل */
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
+            z-index: 100;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+        }
+
+        .nav-item {
+            text-align: center;
+            color: white;
+            text-decoration: none;
+            font-size: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            transition: 0.3s;
+        }
+
+        .nav-item i {
+            font-size: 1.3rem;
+        }
+
+        .nav-item.active, .nav-item:hover {
+            transform: translateY(-5px);
+            text-shadow: 0 2px 10px rgba(255,255,255,0.5);
+        }
+
+        /* --- التجاوب مع الشاشات (Responsive) --- */
+        @media (max-width: 992px) {
+            .hero, .services-section {
+                flex-direction: column;
+                text-align: center;
+            }
+            .hero-slider {
+                margin-top: 50px;
+            }
+            .services-visuals {
+                margin-top: 40px;
+                display: flex;
+                justify-content: center;
+                width: 100%;
+            }
+            .ticket-mockup {
+                position: relative;
+                top: 0 !important;
+                right: 0 !important;
+                margin-bottom: -100px; /* تداخل جميل للكروت */
+            }
+            .ticket-2 {
+                transform: scale(0.9) translateY(40px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+            .hero-slider {
+                flex-direction: column;
+            }
+            .flight-card:nth-child(2) {
+                transform: scale(1); /* إلغاء التكبير في الموبايل */
+            }
+            .mobile-bottom-nav {
+                display: block; /* إظهار الشريط السفلي في الهواتف */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <input type="checkbox" id="sidebar-toggle">
+    <label for="sidebar-toggle" class="overlay"></label>
+
+    <aside class="sidebar">
+        <div class="logo">فلاي زون ✈️</div>
+        <ul>
+            <li><a href="#"><i class="fas fa-home"></i> الرئيسية</a></li>
+            <li><a href="#"><i class="fas fa-plane-departure"></i> حجز رحلات</a></li>
+            <li><a href="#"><i class="fas fa-passport"></i> تأشيرات السفر</a></li>
+            <li><a href="#"><i class="fas fa-th-large"></i> الأقسام</a></li>
+            <li><a href="#"><i class="fas fa-info-circle"></i> من نحن</a></li>
+            <li><a href="#"><i class="fas fa-blog"></i> المدونة</a></li>
+            <li><a href="#"><i class="fas fa-headset"></i> اتصل بنا</a></li>
+        </ul>
+    </aside>
+
+    <header>
+        <label for="sidebar-toggle" class="menu-btn">
+            <i class="fas fa-bars"></i>
+        </label>
+        <div class="header-logo">FlyZone</div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>كل رحلات العالم من مكان واحد</h1>
+            <p>اكتشف وجهتك القادمة، احجز تذكرتك، واستخرج تأشيرتك بكل سهولة وأمان مع أفضل عروض الطيران.</p>
+            <a href="#" class="btn">احجز رحلتك الآن</a>
+        </div>
+
+        <div class="hero-slider">
+            <div class="flight-card">
+                <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=300&q=80" alt="باريس">
+                <h3>باريس، فرنسا</h3>
+                <p>ابتداءً من $350</p>
+            </div>
+            <div class="flight-card">
+                 <img src="https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=300&q=80" alt="المالديف">
+                <h3>جزر المالديف</h3>
+                <p>ابتداءً من $599</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="services-section">
+        <div class="services-text">
+            <h2>تذاكر طيران وتأشيرات دولية</h2>
+            <p>استمتع بالسفر لأكثر من 150 دولة حول العالم. نوفر لك حجوزات طيران مخفضة، وإصدار تأشيرات (Visa) سياحية وعلاجية بسرعة وسهولة تامة.</p>
+            <ul style="list-style: none; line-height: 2;">
+                <li><i class="fas fa-check" style="color: var(--primary-color);"></i> حجوزات طيران مرنة</li>
+                <li><i class="fas fa-check" style="color: var(--primary-color);"></i> استخراج تأشيرات الشنغن</li>
+                <li><i class="fas fa-check" style="color: var(--primary-color);"></i> إدارة حجزك بالكامل</li>
+            </ul>
+        </div>
+        
+        <div class="services-visuals">
+            <div class="ticket-mockup ticket-1">
+                <div class="top-row">
+                    <span>بغداد (BGW)</span>
+                    <i class="fas fa-plane"></i>
+                    <span>دبي (DXB)</span>
+                </div>
+                <h3>تذكرة سفر إلكترونية</h3>
+                <p style="margin-top: 20px; font-size: 0.8rem; color: #aaa;">رقم الحجز: #FX8920</p>
+            </div>
+            <div class="ticket-mockup ticket-2">
+                <div class="top-row">
+                    <span>تأشيرة دخول</span>
+                    <i class="fas fa-globe"></i>
+                </div>
+                <h3>فيزا سياحية متعددة</h3>
+                <p style="margin-top: 20px; font-size: 0.8rem; color: #aaa;">صالحة لمدة 5 سنوات</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features-dark">
+        <h2>تعرف على مزايا الحجز السريع</h2>
+        <p>بخطوات بسيطة، اختر وجهتك، قارن الأسعار، وأكد حجزك لتبدأ رحلتك بأمان تام.</p>
+        <a href="#" class="btn" style="color: var(--dark-purple);">اكتشف المزيد من المزايا</a>
+    </section>
+
+    <section class="grid-services">
+        <div class="grid-item">
+            <i class="fas fa-calendar-alt"></i>
+            <h3>إدارة الحجوزات</h3>
+            <p>تعديل أو إلغاء رحلتك بضغطة زر</p>
+        </div>
+        <div class="grid-item">
+            <i class="fas fa-suitcase-rolling"></i>
+            <h3>معلومات الأمتعة</h3>
+            <p>تعرف على الأوزان المسموحة لرحلتك</p>
+        </div>
+        <div class="grid-item">
+            <i class="fas fa-hotel"></i>
+            <h3>حجز الفنادق</h3>
+            <p>أفضل العروض للإقامة في وجهتك</p>
+        </div>
+        <div class="grid-item">
+            <i class="fas fa-car"></i>
+            <h3>تأجير السيارات</h3>
+            <p>تنقل بحرية فور وصولك للمطار</p>
+        </div>
+    </section>
+
+    <nav class="mobile-bottom-nav">
+        <div class="nav-items">
+            <a href="#" class="nav-item active">
+                <i class="fas fa-home"></i>
+                <span>الرئيسية</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-search"></i>
+                <span>بحث رحلة</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-ticket-alt"></i>
+                <span>حجوزاتي</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>حسابي</span>
+            </a>
+        </div>
+    </nav>
+
+</body>
+</html>
