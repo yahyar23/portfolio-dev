@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate ERP - Pro Version</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700&display=swap');
+        body { font-family: 'Tajawal', sans-serif; background: #050505; color: white; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .card-gradient { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 10px; }
+        
+        input, select { 
+            background: rgba(255,255,255,0.05) !important; 
+            border: 1px solid rgba(255,255,255,0.1) !important; 
+            color: white !important; 
+            outline: none !important;
+        }
+        
+        select option { background-color: #1a1a1a !important; color: white !important; }
+
+        @media print {
+            body * { visibility: hidden; }
+            #invoice-print-area, #invoice-print-area * { visibility: visible; }
+            #invoice-print-area { position: absolute; left: 0; top: 0; width: 100%; color: black !important; background: white !important; padding: 20px; }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body class="overflow-hidden">
+
+<div id="app" class="flex h-screen w-full relative">
+
+    <div v-if="!isLoggedIn" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/95 backdrop-blur-3xl animate__animated animate__fadeIn">
+        <div class="glass p-10 rounded-[3rem] w-full max-w-md text-center border-white/20 shadow-2xl">
+            <div class="w-20 h-20 card-gradient rounded-3xl mx-auto mb-6 flex items-center justify-center text-4xl shadow-lg shadow-purple-500/20">🔐</div>
+            <h2 class="text-2xl font-bold mb-2">النظام محمي</h2>
+            <p class="text-gray-400 text-sm mb-8">يرجى إدخال مفتاح الوصول للمتابعة</p>
+            
+            <div class="space-y-4 text-right">
+                <div>
+                    <label class="text-xs mr-2 text-gray-500">اسم المستخدم</label>
+                    <input v-model="loginForm.username" type="text" placeholder="اسمك هنا..." class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 mt-1 focus:border-purple-500 transition-all text-center tracking-widest">
+                </div>
+                <div>
+                    <label class="text-xs mr-2 text-gray-500">كلمة المرور</label>
+                    <input v-model="loginForm.password" @keyup.enter="handleLogin" type="password" placeholder="•••••" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 mt-1 focus:border-purple-500 transition-all text-center tracking-[0.5em]">
+                </div>
+            </div>
+            
+            <button @click="handleLogin" class="w-full mt-8 py-4 card-gradient rounded-2xl font-bold hover:scale-105 transition-transform active:scale-95 shadow-xl">
+                فتح النظام 🔓
+            </button>
+            <div class="text-center p-8 glass rounded-3xl border-dashed border-white/20">
+                                <h4 class="font-bold mb-4">طلب تجربة النسخة الكاملة</h4>
+                                <a :href="'https://wa.me/9647713072470?text=' + encodeURIComponent('مرحبا يحيى، اود تجربة نسخة النظام المطور')" 
+                                   target="_blank" 
+                                   class="inline-flex items-center gap-3 px-10 py-4 bg-green-600 hover:bg-green-500 rounded-2xl font-bold transition-all transform hover:scale-105 shadow-xl shadow-green-900/20">
+                                    <span>تواصل عبر واتساب</span>
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                                </a>
+                                <p class="mt-4 text-xs text-gray-500">رقم المطور: 07713072470</p>
+                            </div>
+            <p v-if="loginError" class="mt-4 text-red-500 text-sm animate__animated animate__shakeX">بيانات الدخول غير صحيحة!</p>
+        </div>
+    </div>
+
+    <template v-if="isLoggedIn">
+        <aside class="hidden lg:flex flex-col w-72 glass border-l border-white/10 p-6 z-50">
+            <div class="mb-10 flex items-center gap-3">
+                <div class="w-10 h-10 card-gradient rounded-xl shadow-lg flex items-center justify-center">💎</div>
+                <h1 class="text-xl font-bold bg-gradient-to-l from-purple-400 to-blue-400 bg-clip-text text-transparent">نظام يحيى المطور</h1>
+            </div>
+            <nav class="space-y-2 flex-1">
+                <button @click="activeTab = 'dashboard'" :class="navClass('dashboard')">🏠 لوحة التحكم</button>
+                <button @click="activeTab = 'sales'" :class="navClass('sales')">💰 نقطة البيع</button>
+                <button @click="activeTab = 'manage'" :class="navClass('manage')">⚙️ الإدارة والمنتجات</button>
+                <button v-if="userRole === 'owner'" @click="activeTab = 'security'" :class="navClass('security')">🛡️ حماية النظام</button>
+                
+                <button @click="logout" class="w-full text-right p-4 rounded-2xl text-red-400 hover:bg-red-500/10 transition-all flex items-center gap-3 mt-10">🚪 تسجيل الخروج</button>
+            </nav>
+        </aside>
+
+        <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+            <header class="h-20 glass border-b border-white/5 flex items-center justify-between px-10 sticky top-0 z-40">
+                <div class="flex items-center gap-4 w-full max-w-md">
+                    <input v-model="searchQuery" @keyup.enter="handleBarcodeSearch" type="text" placeholder="بحث بالاسم أو الباركود..." class="w-full rounded-2xl px-5 py-2.5 text-sm">
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-left ml-4">
+                        <p class="text-xs text-gray-400">يحيى قاسم</p>
+                        <p class="text-[10px] text-purple-400 font-bold">{{ userRole === 'owner' ? 'المالك' : 'مدير النظام' }}</p>
+                    </div>
+                    <img src="https://ui-avatars.com/api/?name=Yahya+Qasim&background=a855f7&color=fff" class="w-10 h-10 rounded-full border border-purple-500/30">
+                </div>
+            </header>
+
+            <div class="flex-1 overflow-y-auto p-4 lg:p-8 custom-scrollbar pb-32">
+                
+                <div v-if="activeTab === 'dashboard'" class="animate__animated animate__fadeIn">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="h-40 rounded-[2rem] p-6 card-gradient shadow-2xl relative overflow-hidden">
+                            <span class="text-white/70 text-sm">إجمالي المبيعات اليوم</span>
+                            <h2 class="text-3xl font-bold mt-2">د.ع {{ totalSalesToday.toLocaleString() }}</h2>
+                        </div>
+                        <div class="h-40 rounded-[2rem] p-6 glass border-red-500/20 shadow-xl">
+                            <span class="text-red-400 text-sm">منتجات قاربت على النفاد</span>
+                            <h2 class="text-3xl font-bold mt-2 text-red-500">{{ lowStockProducts.length }}</h2>
+                        </div>
+                        <div class="h-40 rounded-[2rem] p-6 glass border-blue-500/20 shadow-xl">
+                            <span class="text-blue-400 text-sm">إجمالي المنتجات</span>
+                            <h2 class="text-3xl font-bold mt-2">{{ products.length }}</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="activeTab === 'sales'" class="animate__animated animate__fadeIn grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 space-y-4">
+                        <div class="flex gap-2 overflow-x-auto pb-4 custom-scrollbar">
+                            <button @click="filterCat = null" :class="catTabClass(null)">الكل</button>
+                            <button v-for="cat in categories" :key="cat.id" @click="filterCat = cat.name" :class="catTabClass(cat.name)">{{ cat.name }}</button>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div v-for="p in filteredProducts" :key="p.id" @click="addToCart(p)" 
+                                 class="glass p-4 rounded-3xl hover:border-purple-500 transition-all cursor-pointer group relative">
+                                <div v-if="p.stock <= 5" class="absolute top-2 left-2 bg-red-600 text-[8px] px-2 py-1 rounded-full animate-pulse">مخزون منخفض</div>
+                                <div class="flex justify-between items-start">
+                                    <span class="text-3xl">{{ p.icon || '📦' }}</span>
+                                    <span class="text-green-400 font-bold">د.ع {{ p.price }}</span>
+                                </div>
+                                <h4 class="mt-4 font-bold">{{ p.name }}</h4>
+                                <div class="flex justify-between text-[10px] text-gray-500 mt-2">
+                                    <span>الكمية: {{ p.stock }}</span>
+                                    <span>كود: {{ p.barcode }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-1">
+                        <div class="glass rounded-[2rem] p-6 sticky top-4">
+                            <h3 class="font-bold mb-6">سلة المبيعات</h3>
+                            <div class="space-y-4 max-h-60 overflow-y-auto custom-scrollbar mb-6">
+                                <div v-for="item in cart" class="flex justify-between items-center text-sm">
+                                    <span>{{ item.name }} (x{{ item.quantity }})</span>
+                                    <div class="flex items-center gap-2">
+                                        <span>د.ع {{ item.price * item.quantity }}</span>
+                                        <button @click.stop="removeFromCart(item.id)" class="text-red-500">✕</button>
+                                    </div>
+                                </div>
+                                <div v-if="cart.length === 0" class="text-center text-gray-600 py-10">السلة فارغة</div>
+                            </div>
+                            <div class="border-t border-white/10 pt-4">
+                                <div class="flex justify-between text-xl font-bold mb-6"><span>الإجمالي</span><span>د.ع {{ cartTotal }}</span></div>
+                                <button @click="processSale" class="w-full py-4 rounded-2xl card-gradient font-bold shadow-xl">إتمام الطلب وطباعة 📄</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="activeTab === 'manage'" class="animate__animated animate__fadeInUp space-y-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="glass p-6 rounded-[2rem] space-y-4">
+                            <h3 class="font-bold border-r-4 border-purple-500 pr-3">إضافة / تعديل منتج</h3>
+                            <div class="grid grid-cols-2 gap-3">
+                                <input v-model="formProduct.name" type="text" placeholder="اسم المنتج" class="col-span-2 p-3 rounded-xl">
+                                <input v-model="formProduct.barcode" type="text" placeholder="الباركود" class="p-3 rounded-xl">
+                                <input v-model.number="formProduct.price" type="number" placeholder="السعر" class="p-3 rounded-xl">
+                                <input v-model.number="formProduct.stock" type="number" placeholder="الكمية الافتتاحية" class="p-3 rounded-xl">
+                                <select v-model="formProduct.category" class="p-3 rounded-xl">
+                                    <option value="" disabled selected>اختر القسم</option>
+                                    <option v-for="c in categories" :key="c.id" :value="c.name">{{ c.name }}</option>
+                                </select>
+                            </div>
+                            <button @click="saveProduct" class="w-full py-3 card-gradient rounded-xl font-bold">حفظ المنتج</button>
+                        </div>
+                        <div class="glass p-6 rounded-[2rem] space-y-4">
+                            <h3 class="font-bold border-r-4 border-blue-500 pr-3">إدارة الأقسام</h3>
+                            <div class="flex gap-2">
+                                <input v-model="newCatName" type="text" placeholder="قسم جديد" class="flex-1 p-3 rounded-xl">
+                                <button @click="addCategory" class="px-6 bg-blue-600 rounded-xl font-bold">+</button>
+                            </div>
+                            <div class="mt-4 space-y-2 max-h-40 overflow-y-auto custom-scrollbar">
+                                <div v-for="cat in categories" :key="cat.id" class="flex justify-between items-center p-2 bg-white/5 rounded-lg text-sm">
+                                    <span>{{ cat.name }}</span>
+                                    <button @click="deleteCategory(cat.id)" class="text-red-500 text-xs">حذف</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass rounded-[2rem] overflow-hidden shadow-2xl">
+                        <table class="w-full text-right border-collapse">
+                            <thead class="bg-white/5 text-gray-400 text-sm">
+                                <tr>
+                                    <th class="p-4">المنتج / الباركود</th>
+                                    <th class="p-4">الكمية</th>
+                                    <th class="p-4">السعر</th>
+                                    <th class="p-4">العمليات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="p in products" :key="p.id" class="border-t border-white/5 hover:bg-white/5">
+                                    <td class="p-4">
+                                        <div>{{ p.name }}</div>
+                                        <div class="text-[10px] text-gray-500">{{ p.barcode }}</div>
+                                    </td>
+                                    <td class="p-4">
+                                        <span :class="p.stock <= 5 ? 'text-red-500 font-bold' : ''">{{ p.stock }}</span>
+                                    </td>
+                                    <td class="p-4 text-green-400">د.ع {{ p.price }}</td>
+                                    <td class="p-4">
+                                        <button @click="editProduct(p)" class="ml-2 text-blue-400">📝</button>
+                                        <button @click="deleteProduct(p.id)" class="text-red-500">🗑️</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div v-if="activeTab === 'security' && userRole === 'owner'" class="animate__animated animate__fadeIn space-y-8">
+                    <div class="glass p-10 rounded-[3rem] max-w-2xl mx-auto border-purple-500/20 shadow-2xl">
+                        <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                            <span class="p-2 bg-purple-500/20 rounded-lg">🛡️</span>
+                            إعدادات الأمان والتحكم
+                        </h3>
+                        
+                        <div class="space-y-6">
+                            <div class="p-6 bg-white/5 rounded-3xl border border-white/10">
+                                <label class="block text-sm text-gray-400 mb-3">تغيير كلمة مرور المدير (Admin)</label>
+                                <div class="flex gap-3">
+                                    <input v-model="newAdminPassword" type="text" placeholder="كلمة المرور الجديدة" class="flex-1 p-4 rounded-2xl">
+                                    <button @click="updateAdminPassword" class="px-8 card-gradient rounded-2xl font-bold">تحديث</button>
+                                </div>
+                                <p class="text-[10px] text-gray-500 mt-2">ملاحظة: المدير لن يرى هذه الإعدادات.</p>
+                            </div>
+
+                            
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div v-if="lastInvoice" class="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4">
+                <div id="invoice-print-area" class="bg-white text-black p-8 rounded-2xl w-full max-w-md shadow-2xl">
+                    <div class="text-center border-b-2 border-black pb-4 mb-4">
+                        <h2 class="text-2xl font-bold">نظام يحيى المطور</h2>
+                        <p class="text-sm">فاتورة مبيعات</p>
+                    </div>
+                    <div class="flex justify-between mb-4 text-sm">
+                        <span>التاريخ: {{ lastInvoice.date }}</span>
+                        <span>الوقت: {{ lastInvoice.time }}</span>
+                    </div>
+                    <table class="w-full mb-4 text-sm">
+                        <thead><tr class="border-b border-gray-300"><th class="text-right">المنتج</th><th>الكمية</th><th>السعر</th></tr></thead>
+                        <tbody>
+                            <tr v-for="item in lastInvoice.items">
+                                <td>{{ item.name }}</td><td>{{ item.quantity }}</td><td>د.ع {{ item.price * item.quantity }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="text-xl font-bold text-left border-t-2 border-black pt-2">الإجمالي: د.ع {{ lastInvoice.total }}</div>
+                    <div class="mt-8 flex gap-2 no-print">
+                        <button @click="printInvoice" class="flex-1 bg-black text-white py-2 rounded-lg">طباعة 🖨️</button>
+                        <button @click="lastInvoice = null" class="flex-1 border border-black py-2 rounded-lg">إغلاق</button>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="showToast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-green-600 text-white px-8 py-3 rounded-full z-[100]">
+                {{ toastMsg }} ✅
+            </div>
+        </main>
+    </template>
+</div>
+
+<script>
+    const { createApp, ref, computed, onMounted, watch } = Vue;
+
+    createApp({
+        setup() {
+            // بيانات الأمان
+            const isLoggedIn = ref(false);
+            const userRole = ref(''); // owner or admin
+            const loginError = ref(false);
+            const loginForm = ref({ username: '', password: '' });
+            
+            // كلمات المرور الافتراضية
+            const OWNER_PASS = "44400";
+            const adminPass = ref(localStorage.getItem('erp_admin_pass') || "55500");
+            const newAdminPassword = ref('');
+
+            const handleLogin = () => {
+                const u = loginForm.value.username;
+                const p = loginForm.value.password;
+
+                if (p === OWNER_PASS) {
+                    isLoggedIn.value = true;
+                    userRole.value = 'owner';
+                    sessionStorage.setItem('isAuth', 'true');
+                    sessionStorage.setItem('role', 'owner');
+                } else if (p === adminPass.value) {
+                    isLoggedIn.value = true;
+                    userRole.value = 'admin';
+                    sessionStorage.setItem('isAuth', 'true');
+                    sessionStorage.setItem('role', 'admin');
+                } else {
+                    loginError.value = true;
+                    setTimeout(() => loginError.value = false, 2000);
+                }
+            };
+
+            const updateAdminPassword = () => {
+                if (newAdminPassword.value.length < 3) return alert('كلمة المرور قصيرة جداً');
+                adminPass.value = newAdminPassword.value;
+                localStorage.setItem('erp_admin_pass', adminPass.value);
+                newAdminPassword.value = '';
+                toastMsg.value = "تم تحديث كلمة مرور الـ Admin";
+                toast();
+            };
+
+            const logout = () => {
+                isLoggedIn.value = false;
+                userRole.value = '';
+                sessionStorage.clear();
+            };
+
+            // بيانات النظام
+            const activeTab = ref('dashboard');
+            const searchQuery = ref('');
+            const filterCat = ref(null);
+            const showToast = ref(false);
+            const toastMsg = ref('تم الحفظ');
+            const totalSalesToday = ref(0);
+            
+            const categories = ref([]);
+            const products = ref([]);
+            const cart = ref([]);
+            const lastInvoice = ref(null);
+            const newCatName = ref('');
+            const formProduct = ref({ name: '', price: null, category: '', barcode: '', stock: 0, icon: '📦' });
+            const editingId = ref(null);
+
+            onMounted(() => {
+                if (sessionStorage.getItem('isAuth') === 'true') {
+                    isLoggedIn.value = true;
+                    userRole.value = sessionStorage.getItem('role');
+                }
+
+                const savedProds = localStorage.getItem('erp_products');
+                const savedCats = localStorage.getItem('erp_categories');
+                const savedSales = localStorage.getItem('erp_total_sales');
+
+                if (savedProds) products.value = JSON.parse(savedProds);
+                if (savedCats) categories.value = JSON.parse(savedCats);
+                if (savedSales) totalSalesToday.value = parseFloat(savedSales);
+                if (categories.value.length === 0) categories.value = [{id: 1, name: 'عام'}];
+            });
+
+            watch([products, categories], () => {
+                localStorage.setItem('erp_products', JSON.stringify(products.value));
+                localStorage.setItem('erp_categories', JSON.stringify(categories.value));
+            }, { deep: true });
+
+            const filteredProducts = computed(() => {
+                return products.value.filter(p => {
+                    const matchSearch = p.name.toLowerCase().includes(searchQuery.value.toLowerCase()) || p.barcode.includes(searchQuery.value);
+                    const matchCat = filterCat.value ? p.category === filterCat.value : true;
+                    return matchSearch && matchCat;
+                });
+            });
+
+            const lowStockProducts = computed(() => products.value.filter(p => p.stock <= 5));
+            const cartTotal = computed(() => cart.value.reduce((s, i) => s + (i.price * i.quantity), 0));
+
+            const handleBarcodeSearch = () => {
+                const product = products.value.find(p => p.barcode === searchQuery.value);
+                if (product) {
+                    addToCart(product);
+                    searchQuery.value = '';
+                    toastMsg.value = "تمت الإضافة بالباركود";
+                    toast();
+                }
+            };
+
+            const addToCart = (p) => {
+                if (p.stock <= 0) { alert('عذراً، المنتج نفذ من المخزن!'); return; }
+                const item = cart.value.find(i => i.id === p.id);
+                item ? item.quantity++ : cart.value.push({ ...p, quantity: 1 });
+            };
+
+            const removeFromCart = (id) => cart.value = cart.value.filter(i => i.id !== id);
+
+            const processSale = () => {
+                if(cart.value.length === 0) return;
+                cart.value.forEach(item => {
+                    const product = products.value.find(p => p.id === item.id);
+                    if (product) product.stock -= item.quantity;
+                });
+                const now = new Date();
+                lastInvoice.value = {
+                    items: [...cart.value],
+                    total: cartTotal.value,
+                    date: now.toLocaleDateString('ar-EG'),
+                    time: now.toLocaleTimeString('ar-EG')
+                };
+                totalSalesToday.value += cartTotal.value;
+                localStorage.setItem('erp_total_sales', totalSalesToday.value);
+                cart.value = [];
+                toastMsg.value = "تمت عملية البيع";
+                toast();
+            };
+
+            const printInvoice = () => { setTimeout(() => { window.print(); }, 500); };
+
+            const saveProduct = () => {
+                if(!formProduct.value.name || !formProduct.value.price) return;
+                if(editingId.value) {
+                    const index = products.value.findIndex(p => p.id === editingId.value);
+                    products.value[index] = { ...formProduct.value, id: editingId.value };
+                    editingId.value = null;
+                } else {
+                    products.value.push({ ...formProduct.value, id: Date.now() });
+                }
+                formProduct.value = { name: '', price: null, category: '', barcode: '', stock: 0, icon: '📦' };
+                toastMsg.value = "تم حفظ المنتج";
+                toast();
+            };
+
+            const addCategory = () => {
+                if(!newCatName.value) return;
+                categories.value.push({ id: Date.now(), name: newCatName.value });
+                newCatName.value = '';
+                toastMsg.value = "تم إضافة القسم";
+                toast();
+            };
+
+            const deleteCategory = (id) => {
+                if(confirm('هل انت متأكد من حذف القسم؟')) {
+                    categories.value = categories.value.filter(c => c.id !== id);
+                }
+            };
+
+            const toast = () => {
+                showToast.value = true;
+                setTimeout(() => showToast.value = false, 2000);
+            };
+
+            const editProduct = (p) => { formProduct.value = { ...p }; editingId.value = p.id; activeTab.value = 'manage'; };
+            const deleteProduct = (id) => products.value = products.value.filter(p => p.id !== id);
+            
+            const navClass = (t) => `w-full text-right p-4 rounded-2xl transition-all flex items-center gap-3 ${activeTab.value === t ? 'bg-purple-600/20 text-purple-400 border border-purple-500/20' : 'text-gray-500 hover:bg-white/5'}`;
+            const catTabClass = (c) => `px-6 py-2 rounded-full whitespace-nowrap transition-all ${filterCat.value === c ? 'card-gradient text-white' : 'glass text-gray-400'}`;
+
+            return {
+                isLoggedIn, loginForm, loginError, handleLogin, logout, userRole,
+                adminPass, newAdminPassword, updateAdminPassword,
+                activeTab, searchQuery, products, categories, cart, filteredProducts, cartTotal, lastInvoice,
+                lowStockProducts, formProduct, editingId, showToast, toastMsg, totalSalesToday, filterCat, newCatName,
+                addCategory, deleteCategory, saveProduct, editProduct, deleteProduct, addToCart, removeFromCart, processSale, handleBarcodeSearch, printInvoice,
+                navClass, catTabClass
+            };
+        }
+    }).mount('#app');
+</script>
+</body>
+</html>
